@@ -44,13 +44,19 @@ export const updateProduct = async (
 ) => {
   const productRef = doc(db, "products", id);
 
-  await updateDoc(productRef, {
+  const updateData: any = {
     name: data.name,
     price: data.price,
     imageUrl: data.imageUrl,
-    imagePublicId: data.imagePublicId,
     updatedAt: new Date(),
-  });
+  };
+
+  // ✅ only add if defined
+  if (data.imagePublicId !== undefined) {
+    updateData.imagePublicId = data.imagePublicId;
+  }
+
+  await updateDoc(productRef, updateData);
 
   if (data.oldPublicId) {
     await deleteFromCloudinary(data.oldPublicId);
